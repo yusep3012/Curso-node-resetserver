@@ -11,7 +11,7 @@ dotenv.config();
 class Server {
   constructor() {
     this.app = express();
-    this.port = process.env.PORT;
+    this.port = process.env.PORT || 4000;
     this.userPath = "/api/usuarios";
 
     // Middlewares
