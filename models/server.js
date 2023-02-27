@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 import router from "../routes/user.routes.js";
+import dbConection from "../database/config.js";
 
 // Toma las variables de entorno
 
@@ -14,11 +15,18 @@ class Server {
     this.port = process.env.PORT || 4000;
     this.userPath = "/api/usuarios";
 
+    // Conectar a base de datos
+    this.connectDB();
+
     // Middlewares
     this.middlewares();
 
     // Rutas de mi aplicación
     this.routes();
+  }
+
+  async connectDB() {
+    await dbConection();
   }
 
   middlewares() {
