@@ -2,11 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import router from "../routes/user.routes.js";
 import dbConection from "../database/config.js";
+import routerLogin from "../routes/auth.routes.js";
+import routerUser from "../routes/user.routes.js";
 
 // Toma las variables de entorno
-
 dotenv.config();
 
 class Server {
@@ -14,6 +14,7 @@ class Server {
     this.app = express();
     this.port = process.env.PORT || 4000;
     this.userPath = "/api/usuarios";
+    this.authPath = "/api/auth";
 
     // Conectar a base de datos
     this.connectDB();
@@ -41,7 +42,8 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.userPath, router);
+    this.app.use(this.authPath, routerLogin);
+    this.app.use(this.userPath, routerUser);
   }
 
   listen() {

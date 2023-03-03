@@ -80,6 +80,10 @@ const usersDelete = async (req, res) => {
     { new: true }
   );
 
+  // Información del usuario autenticado
+  // const userAuthenticated = req.user;
+
+  // res.json({user, userAuthenticated});
   res.json(user);
 };
 

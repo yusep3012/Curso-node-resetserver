@@ -12,7 +12,17 @@ import {
   isRoleValid,
   userExistById,
 } from "../helpers/db-validators.js";
-import validateFields from "../middlewares/validate-fields.js";
+
+// import { isAdminRole, hasRole } from "../middlewares/validate-roles.js";
+// import validateFields from "../middlewares/validate-fields.js";
+// import validateJwt from "../middlewares/validate-jwt.js";
+
+import {
+  validateFields,
+  validateJwt,
+  hasRole,
+  isAdminRole,
+} from "../middlewares/index.js";
 
 const router = Router();
 
@@ -72,6 +82,16 @@ router.post(
 router.delete(
   "/:id",
   [
+    // Validar el JWT
+    validateJwt,
+
+    // FUERZA A QUE EL USUARIO TENGA QUE SER ADMINISTRADOR.
+    // Validar si tiene el role de ADMIN_ROLE
+    // isAdminRole,
+
+    // Valida que tenga alguno de estos roles para poder realizar la acción
+    hasRole("ADMIN_ROLE", "VENTAS_ROLE", "USER_ROLE"),
+
     // Valida si el id es de mongoDB
     check("id", "No es un ID válido").isMongoId(),
 

@@ -38,10 +38,12 @@ const userSchema = Schema({
   },
 });
 
-// Para retirar el password y la versión en la respuesta
+// Para retirar el password y la versión en la respuesta visualizada en el json
 userSchema.methods.toJSON = function () {
-  // Se saca de la respuesta la versión y el password, solo se retorna el resto de los campos del usuario por medio del {...user} que sería el resto de los campos a mostrar en la respuesta del JSON
-  const { __v, password, ...user } = this.toObject();
+  // Se saca de la respuesta la versión y el password. Solo se retorna el resto de los campos del usuario por medio del {...user} que sería el resto de los campos a mostrar en la respuesta del JSON
+  const { __v, password, _id, ...user } = this.toObject();
+  // Transformar el "_id" en la respuesta del JSON a "uid"
+  user.uid = _id;
   return user;
 };
 
