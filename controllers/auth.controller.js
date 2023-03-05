@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import bcryptjs from "bcryptjs";
 import generateJWT from "../helpers/generate-jwt.js";
+import googleVerify from "../helpers/google-verify.js";
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -44,4 +45,48 @@ const login = async (req, res) => {
   }
 };
 
-export { login };
+const googleSingIn = async (req, res) => {
+  const { id_token } = req.body;
+
+  try {
+    // googleUser
+    const { name, img, email } = await googleVerify(id_token);
+
+    // Referencia para verificar si el usuario existe en la base de datos
+    let user = await User.findOne({ email });
+
+    // Si el usuario no existe
+    if (!user) {
+      // Tengo que crear el usuario
+      const data = {
+        name,
+        email,
+        password: ":p",
+        img,
+        google: true,
+      };
+
+      user = new User(data);
+      await user.save();
+    }
+
+    // Si el estado del usuario está false
+    if (!user.state) {
+      return res.status(401).json({
+        msg: "Hable con el administrador, usuario bloqueado",
+      });
+    }
+
+    // Generar el JWT
+    const token = await generateJWT(user.id);
+
+    res.json({ user, token });
+  } catch (error) {
+    res.status(400).json({
+      msg: "El token no se pudo verificar",
+      ok: false,
+    });
+  }
+};
+
+export { login, googleSingIn };
